@@ -10,8 +10,9 @@ Supports **local** and **SSH** operation with **directory verification**,
 ## Features
 
 - **Terminal / CLI mode** – run the tool entirely in the terminal via
-  `./start.sh`.  Works over SSH, on headless servers, and in any
-  console-only environment — no graphical display required.
+  `./start.sh` (Linux/macOS) or `start.bat` (Windows).  Works over SSH, on
+  headless servers, and in any console-only environment — no graphical display
+  required.
 - **GUI mode** – optional graphical interface via Tkinter
   (`python3 src/OTS_Federation_GUI.py`).
 - **Local & SSH mode** – work directly on the TAK server or connect to a
@@ -51,14 +52,23 @@ cd OTS-Federations-easy
 
 ### Terminal / CLI (recommended for SSH & headless servers)
 
+**Linux / macOS:**
+
 ```bash
 ./start.sh
 ```
 
+**Windows (cmd.exe / PowerShell / Windows Terminal):**
+
+```bat
+start.bat
+```
+
 Or directly:
 
-```bash
-python3 src/OTS_Federation_CLI.py
+```shell
+python3 src/OTS_Federation_CLI.py          # Linux / macOS
+python  src\OTS_Federation_CLI.py          # Windows
 ```
 
 The terminal interface guides you step by step:
