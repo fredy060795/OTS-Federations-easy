@@ -373,6 +373,7 @@ def run_cli(input_func=None) -> None:
             if rc != 0:
                 _print_error(f"Could not read remote config: {remote_content}")
             else:
+                tmp_path = None
                 try:
                     fd, tmp_path = tempfile.mkstemp(suffix=".xml")
                     with os.fdopen(fd, "w") as f:
@@ -398,7 +399,7 @@ def run_cli(input_func=None) -> None:
                 except (OSError, ET.ParseError) as exc:
                     _print_error(f"Config update failed: {exc}")
                 finally:
-                    if os.path.exists(tmp_path):
+                    if tmp_path and os.path.exists(tmp_path):
                         os.unlink(tmp_path)
         else:
             try:

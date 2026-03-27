@@ -86,7 +86,7 @@ class TestPrompt(unittest.TestCase):
             self.assertFalse(result)
 
     def test_prompt_yes_no_ja(self):
-        """German 'ja' should also be accepted."""
+        """German 'ja' and 'j' should also be accepted as yes."""
         with patch("builtins.input", return_value="ja"):
             result = _prompt_yes_no("Continue?", default=False)
             self.assertTrue(result)
