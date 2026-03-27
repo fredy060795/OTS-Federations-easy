@@ -11,7 +11,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from OTS_Federation_GUI import (
+from federation_core import (
     detect_tak_install,
     save_certificate,
     update_core_config,
