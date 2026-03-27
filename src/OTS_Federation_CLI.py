@@ -34,6 +34,7 @@ import xml.etree.ElementTree as ET
 for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
         _stream.reconfigure(errors="replace")
+del _stream
 
 # Ensure the src directory is on the import path.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
