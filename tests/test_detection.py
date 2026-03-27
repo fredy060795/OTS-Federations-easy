@@ -4,6 +4,7 @@ import os
 import tempfile
 import textwrap
 import unittest
+from unittest.mock import patch
 
 # Ensure the src package is importable.
 import sys
@@ -20,21 +21,14 @@ from OTS_Federation_GUI import (
 class TestDetectTakInstall(unittest.TestCase):
     """Tests for ``detect_tak_install``."""
 
+    @patch.dict(os.environ, {}, clear=False)
     def test_returns_none_when_nothing_found(self):
         """All values should be None when no candidate dirs exist."""
-        # Ensure no env override interferes.
-        env = os.environ.pop("TAK_PATH", None)
-        try:
-            result = detect_tak_install()
-            # On a machine without /opt/tak or ~/tak the dict should be
-            # all-None (or contain a real path if the runner happens to
-            # have one – we only assert the dict structure).
-            self.assertIn("tak_dir", result)
-            self.assertIn("certs_dir", result)
-            self.assertIn("config_file", result)
-        finally:
-            if env is not None:
-                os.environ["TAK_PATH"] = env
+        os.environ.pop("TAK_PATH", None)
+        result = detect_tak_install()
+        self.assertIn("tak_dir", result)
+        self.assertIn("certs_dir", result)
+        self.assertIn("config_file", result)
 
     def test_env_override(self):
         """TAK_PATH environment variable should be used first."""
@@ -46,18 +40,11 @@ class TestDetectTakInstall(unittest.TestCase):
             with open(cfg, "w") as f:
                 f.write("<Configuration></Configuration>")
 
-            old = os.environ.get("TAK_PATH")
-            os.environ["TAK_PATH"] = tmpdir
-            try:
+            with patch.dict(os.environ, {"TAK_PATH": tmpdir}):
                 result = detect_tak_install()
                 self.assertEqual(result["tak_dir"], tmpdir)
                 self.assertEqual(result["certs_dir"], certs)
                 self.assertEqual(result["config_file"], cfg)
-            finally:
-                if old is None:
-                    del os.environ["TAK_PATH"]
-                else:
-                    os.environ["TAK_PATH"] = old
 
     def test_detects_certs_only(self):
         """When only a certs dir exists (no config file)."""
@@ -65,18 +52,11 @@ class TestDetectTakInstall(unittest.TestCase):
             certs = os.path.join(tmpdir, "certs")
             os.makedirs(certs)
 
-            old = os.environ.get("TAK_PATH")
-            os.environ["TAK_PATH"] = tmpdir
-            try:
+            with patch.dict(os.environ, {"TAK_PATH": tmpdir}):
                 result = detect_tak_install()
                 self.assertEqual(result["tak_dir"], tmpdir)
                 self.assertEqual(result["certs_dir"], certs)
                 self.assertIsNone(result["config_file"])
-            finally:
-                if old is None:
-                    del os.environ["TAK_PATH"]
-                else:
-                    os.environ["TAK_PATH"] = old
 
 
 class TestUpdateCoreConfig(unittest.TestCase):

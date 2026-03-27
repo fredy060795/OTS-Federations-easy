@@ -169,7 +169,7 @@ def update_core_config(
         ):
             # Already configured – update the display name and return.
             existing.set("display", f"Federation-{remote_addr}")
-            tree.write(config_path, xml_declaration=True, encoding="unicode")
+            tree.write(config_path, xml_declaration=True, encoding="UTF-8")
             return
 
     # Create new <federateOutgoing> entry
@@ -182,7 +182,7 @@ def update_core_config(
     entry.set("protocol", "ssl")
     entry.set("fallback", "")
 
-    tree.write(config_path, xml_declaration=True, encoding="unicode")
+    tree.write(config_path, xml_declaration=True, encoding="UTF-8")
 
 
 # ---------------------------------------------------------------------------
