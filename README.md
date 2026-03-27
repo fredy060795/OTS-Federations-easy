@@ -1,6 +1,7 @@
 # OTS-Federations-easy
 
-A simple graphical tool to set up TAK Federation between two OpenTAK servers.
+A simple graphical tool to set up TAK Federation between two
+[OpenTAK](https://opentakserver.io/) servers.
 Supports **local** and **SSH** operation with **directory verification**,
 **search**, and **manual review before changes**.
 
@@ -24,6 +25,21 @@ Supports **local** and **SSH** operation with **directory verification**,
   `<federationOutgoing>` entry so the user does not have to edit XML manually.
 - **Validation** – all required fields are checked before any changes are made.
 
+## Requirements
+
+- Python 3.6+
+- Tkinter (`sudo apt-get install python3-tk` on Debian/Ubuntu)
+- For SSH mode: `ssh` and `scp` on PATH with key-based authentication
+
+No additional Python packages are required – only the standard library is used.
+
+## Installation
+
+```bash
+git clone https://github.com/fredy060795/OTS-Federations-easy.git
+cd OTS-Federations-easy
+```
+
 ## Quick Start
 
 ```bash
@@ -39,12 +55,6 @@ python3 src/OTS_Federation_GUI.py
 5. Click **Review & Apply…** – review the planned changes and confirm.
 6. Restart the TAK server.
 
-## Requirements
-
-- Python 3.6+
-- Tkinter (`sudo apt-get install python3-tk` on Debian/Ubuntu)
-- For SSH mode: `ssh` and `scp` on PATH with key-based authentication
-
 ## Environment Variables
 
 | Variable   | Description                                      |
@@ -56,3 +66,7 @@ python3 src/OTS_Federation_GUI.py
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+## License
+
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).
