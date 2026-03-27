@@ -28,6 +28,14 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
+# Ensure Unicode characters (═, →, ✓, ✗, …) can be written even when the
+# terminal's encoding doesn't support them (e.g. Windows cp1252).  Without
+# this guard the script crashes with UnicodeEncodeError immediately.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(errors="replace")
+del _stream
+
 # Ensure the src directory is on the import path.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
