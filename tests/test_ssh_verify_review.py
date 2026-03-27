@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from OTS_Federation_GUI import (
+from federation_core import (
     ServerConnection,
     _sh_quote,
     build_change_summary,
@@ -171,7 +171,7 @@ class TestSearchTakDirectories(unittest.TestCase):
                 f.write("<Configuration/>")
 
             # Patch _SEARCH_ROOTS to only look in our temp dir.
-            import OTS_Federation_GUI as mod
+            import federation_core as mod
             old_roots = mod._SEARCH_ROOTS
             mod._SEARCH_ROOTS = [tmpdir]
             try:
@@ -183,7 +183,7 @@ class TestSearchTakDirectories(unittest.TestCase):
 
     def test_search_returns_empty_when_nothing_found(self):
         """No results when no TAK installations exist."""
-        import OTS_Federation_GUI as mod
+        import federation_core as mod
         old_roots = mod._SEARCH_ROOTS
         with tempfile.TemporaryDirectory() as tmpdir:
             mod._SEARCH_ROOTS = [tmpdir]
