@@ -1,30 +1,37 @@
 # OTS-Federations-easy
 
-A simple graphical tool that helps configure **TAK Federation** between two
-[OpenTAK](https://opentakserver.io/) servers. It lets you specify the remote
-server address and port, browse for a PEM trust certificate, and copy that
-certificate into the correct local directory so the TAK server can use it for
-federation.
+A simple graphical tool to set up TAK Federation between two
+[OpenTAK](https://opentakserver.io/) servers.
+Supports **local** and **SSH** operation with **directory verification**,
+**search**, and **manual review before changes**.
 
 ## Features
 
-- Enter the remote server address and federation port
-- Browse for a `.pem` trust certificate and save it to the local TAK
-  certificate directory (`~/tak/certs/` by default)
-- Optional fields for local server name, admin username, and admin password
-  (reserved for future extensions)
-- Input validation with clear error messages
-- Overwrite confirmation when a certificate file already exists
+- **Local & SSH mode** – work directly on the TAK server or connect to a
+  remote server over SSH (key-based / agent-based auth).
+- **Auto-detection** – the tool automatically finds the local OpenTAK server
+  installation (`/opt/tak`, `~/tak`, or a custom `TAK_PATH` environment
+  variable) and pre-fills the certificate directory and configuration file
+  paths.
+- **Directory search** – scan the filesystem for TAK installations when
+  auto-detection does not find them.
+- **Directory verification** – verify that a directory is a valid OpenTAK
+  installation (checks for `certs/`, `CoreConfig.xml`, etc.).
+- **Review before changes** – every planned action (copy certificate, update
+  config) is shown in a review dialog for approval before anything is written.
+- **Certificate management** – browse for a `.pem` trust certificate and copy
+  it into the TAK `certs/` directory with one click.
+- **Auto-configuration** – optionally update `CoreConfig.xml` with a
+  `<federationOutgoing>` entry so the user does not have to edit XML manually.
+- **Validation** – all required fields are checked before any changes are made.
 
 ## Requirements
 
-- **Python 3.6+**
-- **Tkinter** – ships with the standard Python distribution on Windows and
-  macOS. On Debian/Ubuntu install it with:
+- Python 3.6+
+- Tkinter (`sudo apt-get install python3-tk` on Debian/Ubuntu)
+- For SSH mode: `ssh` and `scp` on PATH with key-based authentication
 
-  ```bash
-  sudo apt-get install python3-tk
-  ```
+No additional Python packages are required – only the standard library is used.
 
 ## Installation
 
@@ -33,38 +40,32 @@ git clone https://github.com/fredy060795/OTS-Federations-easy.git
 cd OTS-Federations-easy
 ```
 
-No additional Python packages are required – only the standard library is used.
-
-## Usage
+## Quick Start
 
 ```bash
 python3 src/OTS_Federation_GUI.py
 ```
 
-1. **Remote Server** – enter the address (IP or hostname) and the federation
-   port (default `8089`) of the remote TAK server you want to federate with.
-2. **Trust Certificate** – click *Browse…* to select the remote server's PEM
-   certificate file, then confirm or change the local directory where the
-   certificate will be saved.
-3. Click **Save Certificate & Configure**. The tool validates your inputs,
-   copies the certificate, and shows the next manual steps.
+1. Select **Connection Mode** (Local or SSH).
+2. The tool auto-detects your OpenTAK server paths on startup (use
+   **Search…** if auto-detect doesn't find it, **Verify** to check a
+   detected directory).
+3. Enter the **Remote Server Address** and **Port**.
+4. Browse for the partner server's **trust certificate** (`.pem`).
+5. Click **Review & Apply…** – review the planned changes and confirm.
+6. Restart the TAK server.
 
-## server.xml Configuration Example
+## Environment Variables
 
-After running the tool, open your TAK server's `server.xml` and add a
-`<Federation>` block similar to the following:
+| Variable   | Description                                      |
+|------------|--------------------------------------------------|
+| `TAK_PATH` | Override the auto-detected TAK installation path |
 
-```xml
-<Federation>
-    <remoteHost>192.168.1.100</remoteHost>
-    <remotePort>8089</remotePort>
-    <caFile>/home/user/tak/certs/remote-server.pem</caFile>
-</Federation>
+## Running Tests
+
+```bash
+python3 -m unittest discover -s tests -v
 ```
-
-Replace the values with the actual remote address, port, and the certificate
-path shown by the tool. Then restart the TAK server service for the changes to
-take effect.
 
 ## License
 
