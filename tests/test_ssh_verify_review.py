@@ -20,6 +20,21 @@ from OTS_Federation_GUI import (
 
 
 # ---------------------------------------------------------------------------
+# Shared test helpers
+# ---------------------------------------------------------------------------
+
+def _fake_opt_tak_run(cmd, timeout=30):
+    """Simulate a remote server with /opt/tak, certs/, and CoreConfig.xml."""
+    if "test -d '/opt/tak'" in cmd:
+        return 0, ""
+    if "test -d '/opt/tak/certs'" in cmd:
+        return 0, ""
+    if "test -f '/opt/tak/CoreConfig.xml'" in cmd:
+        return 0, ""
+    return 1, ""
+
+
+# ---------------------------------------------------------------------------
 # ServerConnection
 # ---------------------------------------------------------------------------
 
@@ -132,17 +147,7 @@ class TestVerifyTakDirectory(unittest.TestCase):
     def test_remote_verification_uses_ssh(self):
         """Verify that remote mode calls run_command with test -d / -f."""
         conn = ServerConnection(ssh_host="fakehost")
-        # Mock run_command to simulate a remote server with /opt/tak + certs
-        def fake_run(cmd, timeout=30):
-            if "test -d '/opt/tak'" in cmd:
-                return 0, ""
-            if "test -d '/opt/tak/certs'" in cmd:
-                return 0, ""
-            if "test -f '/opt/tak/CoreConfig.xml'" in cmd:
-                return 0, ""
-            return 1, ""
-
-        conn.run_command = fake_run  # type: ignore[assignment]
+        conn.run_command = _fake_opt_tak_run  # type: ignore[assignment]
         lines = verify_tak_directory("/opt/tak", conn)
         text = "\n".join(lines)
         self.assertIn("✓ Directory exists", text)
@@ -248,17 +253,7 @@ class TestDetectTakInstallWithSSH(unittest.TestCase):
     def test_detect_remote(self):
         """Simulate remote detection via mocked run_command."""
         conn = ServerConnection(ssh_host="fakehost")
-
-        def fake_run(cmd, timeout=30):
-            if "test -d '/opt/tak'" in cmd:
-                return 0, ""
-            if "test -d '/opt/tak/certs'" in cmd:
-                return 0, ""
-            if "test -f '/opt/tak/CoreConfig.xml'" in cmd:
-                return 0, ""
-            return 1, ""
-
-        conn.run_command = fake_run  # type: ignore[assignment]
+        conn.run_command = _fake_opt_tak_run  # type: ignore[assignment]
 
         result = detect_tak_install(conn)
         self.assertEqual(result["tak_dir"], "/opt/tak")

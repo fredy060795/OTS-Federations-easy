@@ -570,8 +570,9 @@ class FederationSetupApp(tk.Tk):
                 port = int(self._ssh_port.get().strip())
             except (ValueError, TypeError):
                 port = 22
-            return ServerConnection(ssh_host=host or None,
-                                    ssh_user=user, ssh_port=port)
+            return ServerConnection(
+                ssh_host=host or None, ssh_user=user, ssh_port=port,
+            )
         return ServerConnection()
 
     # ------------------------------------------------------------------
@@ -836,8 +837,10 @@ class FederationSetupApp(tk.Tk):
     def _toggle_ssh_fields(self, enabled: bool):
         """Enable or disable the SSH entry fields."""
         state = "!disabled" if enabled else "disabled"
-        for widget in (self._ssh_host, self._ssh_user, self._ssh_port,
-                       self._ssh_test_btn):
+        for widget in (
+            self._ssh_host, self._ssh_user, self._ssh_port,
+            self._ssh_test_btn,
+        ):
             widget.state([state])
 
     def _on_conn_mode_changed(self):
@@ -1225,9 +1228,8 @@ class FederationSetupApp(tk.Tk):
                         # Rename on remote to original config name.
                         if ok:
                             base = os.path.basename(tmp_path)
-                            remote_tmp = (
-                                os.path.dirname(config_file) + "/" + base
-                            )
+                            cfg_dir = os.path.dirname(config_file)
+                            remote_tmp = cfg_dir + "/" + base
                             conn.run_command(
                                 f"mv {_sh_quote(remote_tmp)} "
                                 f"{_sh_quote(config_file)}"
